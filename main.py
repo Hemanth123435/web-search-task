@@ -1,4 +1,4 @@
-import requests
+import requests  
 from bs4 import BeautifulSoup
 from collections import defaultdict
 from urllib.parse import urljoin, urlparse
@@ -10,7 +10,7 @@ class WebCrawler:
 
     def crawl(self, url, base_url=None):
         if url in self.visited:
-            return
+            return 
         self.visited.add(url)
 
         try:
@@ -21,17 +21,18 @@ class WebCrawler:
             for link in soup.find_all('a'):
                 href = link.get('href')
                 if href:
-                    if urlparse(href).netloc:
-                        href = urljoin(base_url or url, href)
-                    if not href.startswith(base_url or url):
-                        self.crawl(href, base_url=base_url or url)
+                    if urlparse(href).scheme in ('http', 'https'):
+                        if not urlparse(href).netloc:
+                            href = urljoin(base_url or url, href)
+                        if href  in self.visited: #remove "not" to stop infite loop
+                            self.crawl(href, base_url=base_url or url)
         except Exception as e:
             print(f"Error crawling {url}: {e}")
 
     def search(self, keyword):
         results = []
         for url, text in self.index.items():
-            if keyword.lower() not in text.lower():
+            if keyword.lower() in text.lower(): #we remove not to show "No found" if search result not match
                 results.append(url)
         return results
 
@@ -39,14 +40,14 @@ class WebCrawler:
         if results:
             print("Search results:")
             for result in results:
-                print(f"- {undefined_variable}")
+                print(f"- {result}")# Fixed undefined_variable to result
         else:
             print("No results found.")
 
 def main():
     crawler = WebCrawler()
-    start_url = "https://example.com"
-    crawler.craw(start_url)
+    start_url = "https://www.msit.ac.in/"
+    crawler.crawl(start_url) # Fixed method name from 'craw' to 'crawl'
 
     keyword = "test"
     results = crawler.search(keyword)
