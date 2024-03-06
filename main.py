@@ -1,4 +1,4 @@
-import requests
+import requests  
 from bs4 import BeautifulSoup
 from collections import defaultdict
 from urllib.parse import urljoin, urlparse
@@ -39,7 +39,7 @@ class WebCrawler:
         if results:
             print("Search results:")
             for result in results:
-                print(f"- {undefined_variable}")
+                print(f"- {results}")# Fixed undefined_variable to result
         else:
             print("No results found.")
 
