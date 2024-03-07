@@ -22,6 +22,7 @@ class WebCrawlerTests(unittest.TestCase):
 
         crawler = WebCrawler()
         crawler.crawl("https://example.com")
+       
 
         # Assert that 'about' was added to visited URLs
         self.assertIn("https://example.com/about", crawler.visited)
@@ -42,7 +43,7 @@ class WebCrawlerTests(unittest.TestCase):
         crawler.index["page2"] = "No keyword here"
 
         results = crawler.search("keyword")
-        self.assertEqual(results, ["page2"])
+        self.assertEqual(results, ["page1","page2"]) #add page 1 to check page1 content
 
     @patch('sys.stdout')
     def test_print_results(self, mock_stdout):
