@@ -8,8 +8,8 @@ class WebCrawler:
         self.index = defaultdict(list)
         self.visited = set()
 
-    def crawl(self, url, base_url=None):
-        if url in self.visited:
+    def crawl(self, url, depth=1,base_url=None,):
+        if url in self.visited or depth==0:
             return 
         self.visited.add(url)
 
@@ -21,11 +21,10 @@ class WebCrawler:
             for link in soup.find_all('a'):
                 href = link.get('href')
                 if href:
-                    if urlparse(href).scheme in ('http', 'https'):
-                        if not urlparse(href).netloc:
-                            href = urljoin(base_url or url, href)
-                        if href  in self.visited: #remove "not" to stop infite loop
-                            self.crawl(href, base_url=base_url or url)
+                    if urlparse(href).netloc:
+                        href = urljoin(base_url or url, href)
+                    if href.startswith(base_url or url):
+                        self.crawl(href, base_url=base_url or url)
         except Exception as e:
             print(f"Error crawling {url}: {e}")
 
@@ -46,10 +45,10 @@ class WebCrawler:
 
 def main():
     crawler = WebCrawler()
-    start_url = "https://www.msit.ac.in/"
-    crawler.crawl(start_url) # Fixed method name from 'craw' to 'crawl'
+    start_url = "https://examples.com"
+    crawler.crawl(start_url,depth=2) # Fixed method name from 'craw' to 'crawl'
 
-    keyword = "test"
+    keyword = "docs"
     results = crawler.search(keyword)
     crawler.print_results(results)
 
